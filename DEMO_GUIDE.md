@@ -13,13 +13,13 @@ This guide outlines the steps to demonstrate GitOps deployment with ArgoCD using
    ```bash
    # For customer service
    cd src/customer
-   docker build -t your-registry/customer:1.0.0 .
-   docker push your-registry/customer:1.0.0
+   docker build -t ngpsanjaya/customer:1.0.0 .
+   docker push ngpsanjaya/customer:1.0.0
    
    # For store service
    cd ../store
-   docker build -t your-registry/store:1.0.0 .
-   docker push your-registry/store:1.0.0
+   docker build -t ngpsanjaya/store:1.0.0 .
+   docker push ngpsanjaya/store:1.0.0
    ```
 
 3. Update the image references in the deployment files to match your registry.
@@ -91,7 +91,8 @@ This guide outlines the steps to demonstrate GitOps deployment with ArgoCD using
 
 - Access one of the services to demonstrate it's working:
   ```bash
-  kubectl port-forward svc/customer -n dev 3000:80
+  # Run in background with Git Bash
+  kubectl port-forward svc/customer -n dev 3000:80 > /dev/null 2>&1 &
   ```
   Navigate to http://localhost:3000 in your browser
 
@@ -108,14 +109,14 @@ This guide outlines the steps to demonstrate GitOps deployment with ArgoCD using
 - Build and push a new container image:
   ```bash
   cd src/customer
-  docker build -t your-registry/customer:1.0.1 .
-  docker push your-registry/customer:1.0.1
+  docker build -t ngpsanjaya/customer:1.0.1 .
+  docker push ngpsanjaya/customer:1.0.1
   ```
 
 - Update the image tag in the deployment manifest:
   ```yaml
   # deploy/customer/base/deployment.yaml
-  image: your-registry/customer:1.0.1
+  image: ngpsanjaya/customer:1.0.1
   ```
 
 - Commit and push the changes:
@@ -137,8 +138,8 @@ This guide outlines the steps to demonstrate GitOps deployment with ArgoCD using
 - Demonstrate a promotion from dev to qa:
   ```bash
   # First verify the change is only in dev
-  kubectl port-forward svc/customer -n dev 3000:80
-  kubectl port-forward svc/customer -n qa 3001:80
+  kubectl port-forward svc/customer -n dev 3000:80 > /dev/null 2>&1 &
+  kubectl port-forward svc/customer -n qa 3001:80 > /dev/null 2>&1 &
   ```
 
 - Update the qa environment to use the new version:
@@ -150,7 +151,7 @@ This guide outlines the steps to demonstrate GitOps deployment with ArgoCD using
       spec:
         containers:
         - name: customer
-          image: your-registry/customer:1.0.1
+          image: ngpsanjaya/customer:1.0.1
   ```
 
 - Commit and push the changes:
@@ -184,6 +185,42 @@ This guide outlines the steps to demonstrate GitOps deployment with ArgoCD using
 - Answer questions about the demo
 - Discuss potential use cases for their specific projects
 - Address any concerns about implementation
+
+## Accessing Services
+
+### Customer Service
+- Dev: http://localhost:3000
+- QA: http://localhost:3001
+- Prod: http://localhost:3002
+
+### Store Service
+- Dev: http://localhost:5000
+- QA: http://localhost:5001
+- Prod: http://localhost:5002
+
+## Port Forwarding Commands
+
+```bash
+# Customer Service
+kubectl port-forward svc/customer -n dev 3000:80 > /dev/null 2>&1 &
+kubectl port-forward svc/customer -n qa 3001:80 > /dev/null 2>&1 &
+kubectl port-forward svc/customer -n prod 3002:80 > /dev/null 2>&1 &
+
+# Store Service
+kubectl port-forward svc/store -n dev 5000:80 > /dev/null 2>&1 &
+kubectl port-forward svc/store -n qa 5001:80 > /dev/null 2>&1 &
+kubectl port-forward svc/store -n prod 5002:80 > /dev/null 2>&1 &
+```
+
+To check which ports are currently forwarded:
+```bash
+netstat -ano | grep 3000  # Customer Dev
+netstat -ano | grep 3001  # Customer QA
+netstat -ano | grep 3002  # Customer Prod
+netstat -ano | grep 5000  # Store Dev
+netstat -ano | grep 5001  # Store QA
+netstat -ano | grep 5002  # Store Prod
+```
 
 ## Follow-up Resources
 
