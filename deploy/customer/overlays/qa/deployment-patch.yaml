@@ -8,6 +8,8 @@ spec:
     spec:
       containers:
       - name: customer
+        image: ngpsanjaya/customer:1.0.0
+        imagePullPolicy: Always
         env:
         - name: NODE_ENV
           value: qa

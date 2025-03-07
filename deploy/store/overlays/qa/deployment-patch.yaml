@@ -1,14 +1,15 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: customer
+  name: store
 spec:
+  replicas: 2
   template:
     spec:
       containers:
-      - name: customer
-        image: ngpsanjaya/customer:1.0.0
+      - name: store
+        image: ngpsanjaya/store:1.0.0
         imagePullPolicy: Always
         env:
-        - name: NODE_ENV
-          value: development
+        - name: FLASK_ENV
+          value: qa

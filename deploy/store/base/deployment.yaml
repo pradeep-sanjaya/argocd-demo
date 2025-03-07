@@ -14,8 +14,8 @@ spec:
     spec:
       containers:
       - name: store
-        image: store:1.0.0
-        imagePullPolicy: IfNotPresent
+        image: ngpsanjaya/store:1.0.0
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         env:

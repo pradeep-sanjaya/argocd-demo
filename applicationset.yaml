@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: microservices-demo
+  namespace: argocd
+spec:
+  generators:
+  - matrix:
+      generators:
+      - list:
+          elements:
+          - service: customer
+          - service: store
+      - list:
+          elements:
+          - env: dev
+          - env: qa
+          - env: prod
+  template:
+    metadata:
+      name: '{{service}}-{{env}}'
+    spec:
+      project: default
+      source:
+        # Replace with your actual GitHub repository URL
+        repoURL: https://github.com/pradeep-sanjaya/argocd-demo.git
+        targetRevision: HEAD
+        path: deploy/{{service}}/overlays/{{env}}
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{env}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
