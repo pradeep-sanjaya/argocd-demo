@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: customer
-        image: ngpsanjaya/customer:1.0.0
+        image: ngpsanjaya/customer:1.0.1
         imagePullPolicy: Always
         env:
         - name: NODE_ENV

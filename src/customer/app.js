@@ -3,7 +3,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
-  res.send(`Customer Service - Version: 1.0.0 - Environment: ${process.env.NODE_ENV || 'development'}`);
+  res.send(`Customer Service - Version: 1.0.1 - Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 app.get('/health', (req, res) => {
